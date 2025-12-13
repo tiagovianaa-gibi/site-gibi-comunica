@@ -222,19 +222,37 @@ const renderPostPage = ({ post, header, footer }) => {
 };
 
 const copyStaticSite = async () => {
-  await fs.remove(PUBLIC_DIR);
-  await ensureDir(PUBLIC_DIR);
+  const repoRoot = process.cwd();
+  const destRoot = path.join(repoRoot, 'public');
 
-  await fs.copy(ROOT, PUBLIC_DIR, {
-    filter: (src) => {
-      const rel = path.relative(ROOT, src);
-      if (!rel || rel === '') return true;
-      const parts = rel.split(path.sep);
-      if (parts[0].startsWith('.git')) return false;
-      if (COPY_SKIP.has(parts[0])) return false;
-      return true;
-    },
-  });
+  await fs.remove(destRoot);
+  await fs.ensureDir(destRoot);
+
+  const skip = new Set([
+    'public',
+    'node_modules',
+    '.git',
+    '.netlify',
+    'scripts',
+    'content',
+    '.github',
+    '.vscode',
+    'package.json',
+    'package-lock.json',
+    'netlify.toml',
+    'README.md',
+    'LICENSE',
+    'yarn.lock',
+    'pnpm-lock.yaml',
+  ]);
+
+  const entries = await fs.readdir(repoRoot);
+  for (const entry of entries) {
+    if (skip.has(entry)) continue;
+    const srcPath = path.join(repoRoot, entry);
+    const destPath = path.join(destRoot, entry);
+    await fs.copy(srcPath, destPath, { overwrite: true });
+  }
 };
 
 const build = async () => {
