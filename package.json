@@ -1,0 +1,14 @@
+{
+  "name": "site-gibi-comunica",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-blog.cjs",
+    "dev:cms": "npx decap-server"
+  },
+  "dependencies": {
+    "fs-extra": "^11.2.0",
+    "gray-matter": "^4.0.3",
+    "marked": "^11.1.1"
+  }
+}
