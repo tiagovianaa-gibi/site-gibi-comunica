@@ -230,6 +230,7 @@ const copyStaticSite = async () => {
 
   const skip = new Set([
     'public',
+    'blog-old',
     'node_modules',
     '.git',
     '.netlify',
